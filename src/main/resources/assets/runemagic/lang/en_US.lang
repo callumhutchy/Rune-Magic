@@ -1,0 +1,34 @@
+< en_US.lang -  English localization file for the mod Runecraft >
+item.airrune.name=Air Rune
+item.armadylrune.name=Armadyl Rune
+item.astralrune.name=Astral Rune
+item.bloodrune.name=Blood Rune
+item.bodyrune.name=Body Rune
+item.chaosrune.name=Chaos Rune
+item.cosmicrune.name=Cosmic Rune
+item.deathrune.name=Death Rune
+item.dustrune.name=Dust Rune
+item.earthrune.name=Earth Rune
+item.firerune.name=Fire Rune
+item.lavarune.name=Lava Rune
+item.lawrune.name=Law Rune
+item.mindrune.name=Mind Rune
+item.mistrune.name=Mist Rune
+item.mudrune.name=Mud Rune
+item.naturerune.name=Nature Rune
+item.smokerune.name=Smoke Rune
+item.soulrune.name=Soul Rune
+item.steamrune.name=Steam Rune
+item.waterrune.name=Water Rune
+
+
+item.staff.name=Staff
+item.airstaff.name=Air Staff
+item.waterstaff.name=Water Staff
+item.firestaff.name=Fire Staff
+item.earthstaff.name=Earth Staff
+
+item.spellbook.name=Spell Book
+
+itemGroup.tabRunemagic=RuneMagic
+
