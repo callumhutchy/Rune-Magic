@@ -1,0 +1,6 @@
+{
+    "parent": "runemagic:block/altar",
+    "textures": {
+      "all": "runemagic:blocks/firealtar"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "runemagic:block/runealtar",
+    "textures": {
+        "all": "runemagic:blocks/bloodrunealtar"
+    }
+    
+}

@@ -31,18 +31,18 @@ public class RuneMagic {
 				return new ItemStack(Item.getByNameOrId(ModInfo.MODID+":airrune"));
 			}
 		};
-		
+		proxy.onPreInit(e);
 		
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent e){
-		
+		proxy.onInit(e);
 	}
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e){
-		
+		proxy.onPostInit(e);
 	}
 	
 	

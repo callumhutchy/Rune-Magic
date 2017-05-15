@@ -1,5 +1,8 @@
 package callumhutchy.runemagic.proxies;
 
+import callumhutchy.runemagic.blocks.Blocks;
+import callumhutchy.runemagic.blocks.models.tileentities.BlockTileEntities;
+import callumhutchy.runemagic.items.Items;
 import callumhutchy.runemagic.utils.handlers.ConfigurationHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -13,7 +16,9 @@ public class CommonProxy implements IProxy{
 	@Override
 	public void onPreInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
-		
+		BlockTileEntities.init();
+		Items.init();
+		Blocks.init();
 	}
 
 	@Override
@@ -21,7 +26,7 @@ public class CommonProxy implements IProxy{
 		
 		
 		MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
-		
+		Items.registerCraftingRecipes();
 	}
 
 	@Override
