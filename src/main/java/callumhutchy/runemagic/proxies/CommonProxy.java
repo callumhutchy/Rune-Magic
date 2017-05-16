@@ -16,17 +16,20 @@ public class CommonProxy implements IProxy{
 	@Override
 	public void onPreInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
-		BlockTileEntities.init();
+		
+		
 		Items.init();
 		Blocks.init();
-	}
+		
+		}
 
 	@Override
 	public void onInit(FMLInitializationEvent event) {
 		
-		
-		MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
+		BlockTileEntities.init();
 		Items.registerCraftingRecipes();
+		MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
+		
 	}
 
 	@Override

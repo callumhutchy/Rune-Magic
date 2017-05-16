@@ -37,7 +37,7 @@ public class Altar extends BasicBlockContainer {
 	public static int blockTick = 0;
 	String altarElement = "";
 	
-	private String tileEntityPackage = "callumhutchy."+ModInfo.MODID+".blocks.tileentities.altars.";
+	private String tileEntityPackage = "callumhutchy.runemagic.blocks.models.tileentities.altars.";
 	
 	public Altar(String unlocalisedName) {
 		super(Material.ROCK, unlocalisedName);
@@ -108,6 +108,7 @@ public class Altar extends BasicBlockContainer {
 		altarElementName = altarElementName.substring(0, 1).toUpperCase() + altarElementName.substring(1);
 		Class clazz;
 		try {
+			System.out.println(altarElementName + altarNameArray.get(1));
 			clazz = Class.forName(tileEntityPackage + "TileEntity" + altarElementName + altarNameArray.get(1));
 			constructor = clazz.getConstructor();
 			return constructor.newInstance();
@@ -129,7 +130,8 @@ public class Altar extends BasicBlockContainer {
 		if (blockTick == 0) {
 			if (!world.isRemote) {
 				Item item = entity.inventory.getCurrentItem().getItem();
-				if (item == Items.blankRune && !altarName.contains("rune")) {
+				
+				if (item == Items.blankRune && !altarName.contains("runealtar")) {
 					int currentNumberOfRunes = entity.inventory.getCurrentItem().getCount();
 					world.setBlockToAir(pos);
 					Block runeAltar = null;
@@ -162,6 +164,7 @@ public class Altar extends BasicBlockContainer {
 					entity.inventory.removeStackFromSlot(entity.inventory.currentItem);
 					item = null;
 				} else if (item.getUnlocalizedName().contains("talisman") && altarName.contains("rune")) {
+					System.out.println("Hello talisman");
 					Item talisman = item;
 					String talismanElement = null;
 					if (talisman.getUnlocalizedName().contains("talismanstaff")) {
@@ -215,6 +218,7 @@ public class Altar extends BasicBlockContainer {
 						}
 					}
 				} else {
+					System.out.println("handy");
 					if (altarName.contains("rune")) {
 						world.setBlockToAir(pos);
 						Block runeAltar = null;
