@@ -73,6 +73,15 @@ public class Altar extends BasicBlockContainer {
 	}
 	
 	@Override
+	public void onBlockDestroyedByPlayer(World world, BlockPos pos, IBlockState state)
+    {
+		if(altarName.contains("runealtar")){
+			EntityItem item = new EntityItem(world, pos.getX(), pos.getY() , pos.getZ(), new ItemStack(Items.blankRune, numberOfRunes));
+			world.spawnEntity(item);
+		}
+    }
+	
+	@Override
 	public boolean isOpaqueCube(IBlockState iBlockState) {
 		return false;
 	}
@@ -124,10 +133,12 @@ public class Altar extends BasicBlockContainer {
 		this.te = te;
 	}
 
+	
+	
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entity, EnumHand hand,
 			EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (blockTick == 0) {
+		
 			if (!world.isRemote) {
 				Item item = entity.inventory.getCurrentItem().getItem();
 				
@@ -256,9 +267,7 @@ public class Altar extends BasicBlockContainer {
 				blockTick = 5;
 			}
 			return true;
-		} else {
-			return false;
-		}
+		
 	}
 
 	public static int randInt(int min, int max) {
