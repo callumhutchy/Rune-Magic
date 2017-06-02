@@ -232,7 +232,6 @@ public class Altar extends BasicBlockContainer {
 						}
 					}
 				} else {
-					System.out.println("handy");
 					if (altarName.contains("rune")) {
 						world.setBlockToAir(pos);
 						Block runeAltar = null;
