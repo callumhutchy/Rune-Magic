@@ -76,8 +76,11 @@ public class Altar extends BasicBlockContainer {
 	public void onBlockDestroyedByPlayer(World world, BlockPos pos, IBlockState state)
     {
 		if(altarName.contains("runealtar")){
-			EntityItem item = new EntityItem(world, pos.getX(), pos.getY() , pos.getZ(), new ItemStack(Items.blankRune, numberOfRunes));
-			world.spawnEntity(item);
+			if(!world.isRemote){
+				EntityItem item = new EntityItem(world, pos.getX(), pos.getY() , pos.getZ(), new ItemStack(Items.blankRune, numberOfRunes));
+				world.spawnEntity(item);
+			}
+			
 		}
     }
 	
