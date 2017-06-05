@@ -1,11 +1,13 @@
 package callumhutchy.runemagic.utils.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -13,10 +15,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraft.command.ICommand;
 
 public class CMDCurrentLevel extends CommandBase{
 
+	private List<String> aliases;
+	
+	public CMDCurrentLevel(){
+		this.aliases = new ArrayList<String>();
+		this.aliases.add("level");
+	}
+	
 	@Override
 	public String getName() {
 
@@ -53,7 +61,7 @@ public class CMDCurrentLevel extends CommandBase{
 	@Override
 	public List<String> getAliases() {
 		// TODO Auto-generated method stub
-		return null;
+		return aliases;
 	}
 
 	@Override

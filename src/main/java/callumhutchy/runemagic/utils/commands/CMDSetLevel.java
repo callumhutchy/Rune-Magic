@@ -1,5 +1,6 @@
 package callumhutchy.runemagic.utils.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
@@ -17,6 +18,13 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class CMDSetLevel extends CommandBase{
 
+	private List<String> aliases;
+	
+	public CMDSetLevel(){
+		this.aliases = new ArrayList<String>();
+		this.aliases.add("setlevel");
+	}
+	
 	@Override
 	public String getName() {
 
@@ -56,7 +64,7 @@ public class CMDSetLevel extends CommandBase{
 	@Override
 	public List<String> getAliases() {
 		
-		return null;
+		return aliases;
 	}
 
 	@Override

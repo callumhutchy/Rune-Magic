@@ -62,8 +62,8 @@ public class CommonProxy implements IProxy{
 		manager.registerCommand(new CMDCurrentLevel());
 		manager.registerCommand(new CMDSetLevel());
 		*/
-		//event.registerServerCommand(new CMDCurrentLevel());
-		//event.registerServerCommand(new CMDSetLevel());
+		event.registerServerCommand(new CMDCurrentLevel());
+		event.registerServerCommand(new CMDSetLevel());
 	}
 
 	@Override
