@@ -1,6 +1,7 @@
 package callumhutchy.runemagic.proxies;
 
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

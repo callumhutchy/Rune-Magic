@@ -11,6 +11,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
 @Mod(modid = ModInfo.MODID, version = ModInfo.VERSION, name = ModInfo.MODNAME)
 public class RuneMagic {
@@ -43,6 +45,16 @@ public class RuneMagic {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e){
 		proxy.onPostInit(e);
+	}
+	
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent event){
+		proxy.onServerStarting(event);
+	}
+	
+	@EventHandler
+	public void serverStopping(FMLServerStoppingEvent event){
+		proxy.onServerStopping(event);
 	}
 	
 	
