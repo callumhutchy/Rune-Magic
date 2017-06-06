@@ -1,5 +1,4 @@
-< en_US.lang -  English localization file for the mod Runecraft >
-item.airrune.name=Air Rune
+< en_US.lang -  English localization file for the mod Runemagic
 item.armadylrune.name=Armadyl Rune
 item.astralrune.name=Astral Rune
 item.bloodrune.name=Blood Rune
@@ -30,5 +29,5 @@ item.earthstaff.name=Earth Staff
 
 item.spellbook.name=Spell Book
 
-itemGroup.tabRunemagic=RuneMagic
+itemGroup.tabRuneMagic=RuneMagic
 

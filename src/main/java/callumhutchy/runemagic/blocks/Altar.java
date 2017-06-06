@@ -41,6 +41,7 @@ public class Altar extends BasicBlockContainer {
 	
 	public Altar(String unlocalisedName) {
 		super(Material.ROCK, unlocalisedName);
+		
 		if(!unlocalisedName.contains("runealtar")){
 			this.setCreativeTab(RuneMagic.tabRuneMagic);
 		}
