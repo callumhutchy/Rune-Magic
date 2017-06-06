@@ -46,7 +46,9 @@ public class CMDCurrentLevel extends CommandBase{
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(sender instanceof EntityPlayer){
 			
-				EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().player;
+				System.out.println(((EntityPlayer) sender).getUniqueID() + " / / " + sender.getName());
+			
+				EntityPlayer player = (EntityPlayer) sender;
 				ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 				
 				player.sendMessage(new TextComponentString("Your current level is " + props.getLevel()));

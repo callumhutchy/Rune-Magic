@@ -5,14 +5,16 @@ import callumhutchy.runemagic.blocks.Blocks;
 import callumhutchy.runemagic.blocks.models.tileentities.BlockTileEntities;
 import callumhutchy.runemagic.client.gui.GuiHandler;
 import callumhutchy.runemagic.items.Items;
-import callumhutchy.runemagic.references.ModInfo;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayerStorage;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
 import callumhutchy.runemagic.utils.commands.CMDCurrentLevel;
+import callumhutchy.runemagic.utils.commands.CMDCurrentSpell;
+import callumhutchy.runemagic.utils.commands.CMDPlayers;
 import callumhutchy.runemagic.utils.commands.CMDSetLevel;
 import callumhutchy.runemagic.utils.handlers.CapabilityHandler;
 import callumhutchy.runemagic.utils.handlers.ConfigurationHandler;
+import callumhutchy.runemagic.utils.handlers.RuneMagicEventHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -41,6 +43,7 @@ public class CommonProxy implements IProxy{
 		
 		CapabilityManager.INSTANCE.register(IExtendedPlayer.class, new ExtendedPlayerStorage(), ExtendedPlayer.class);
 		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
+		MinecraftForge.EVENT_BUS.register(new RuneMagicEventHandler());
 		
 		BlockTileEntities.init();
 		Items.registerCraftingRecipes();
@@ -60,16 +63,10 @@ public class CommonProxy implements IProxy{
 
 	@Override
 	public void onServerStarting(FMLServerStartingEvent event) {
-		
-		/*
-		MinecraftServer server = event.getServer();
-		ICommandManager command = server.getCommandManager();
-		ServerCommandManager manager = (ServerCommandManager) command;
-		manager.registerCommand(new CMDCurrentLevel());
-		manager.registerCommand(new CMDSetLevel());
-		*/
 		event.registerServerCommand(new CMDCurrentLevel());
 		event.registerServerCommand(new CMDSetLevel());
+		event.registerServerCommand(new CMDCurrentSpell());
+		event.registerServerCommand(new CMDPlayers());
 	}
 
 	@Override

@@ -1,8 +1,12 @@
 package callumhutchy.runemagic;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import callumhutchy.runemagic.proxies.CommonProxy;
 import callumhutchy.runemagic.references.ModInfo;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +28,8 @@ public class RuneMagic {
 	
 	@Mod.Instance(ModInfo.MODID)
 	public static RuneMagic instance = new RuneMagic();
+	
+	public static Map players = new HashMap<String, EntityPlayer>();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e){

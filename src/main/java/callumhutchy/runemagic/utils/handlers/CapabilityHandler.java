@@ -14,8 +14,11 @@ public class CapabilityHandler {
 	@SubscribeEvent
 	public void attachCapability(AttachCapabilitiesEvent.Entity event){
 		if(!(event.getEntity() instanceof EntityPlayer)) return;
+		if(!event.getCapabilities().containsKey(ExtendedPlayer)){
+			event.addCapability(ExtendedPlayer, new ExtendedPlayerProvider() );
+		}
 		
-		event.addCapability(ExtendedPlayer, new ExtendedPlayerProvider() );
+		
 		
 	}
 	

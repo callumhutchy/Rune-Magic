@@ -45,8 +45,10 @@ public class CMDSetLevel extends CommandBase{
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (sender instanceof EntityPlayer) {
-
-			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().player;
+			
+			System.out.println(((EntityPlayer) sender).getUniqueID() + " / / " + sender.getName());
+			
+			EntityPlayer player = (EntityPlayer) sender;
 			ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 			
 			props.setLevel(Integer.parseInt(args[0]));

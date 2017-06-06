@@ -7,6 +7,7 @@ import java.util.Comparator;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import callumhutchy.runemagic.RuneMagic;
 import callumhutchy.runemagic.references.ModInfo;
 import callumhutchy.runemagic.references.NameConstants;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
@@ -66,25 +67,24 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	private GuiButton doneBtn;
 	
 	private void setSelectedSpell(String spellName){
+		System.out.println(spellName);
 		for(SpellResource spell : spells){
-			if(spellName == spell.spellName){
-				spell.isSelected = true;	
+			if(spellName.equals(spell.spellName)){
+				spell.isSelected = true;
+				System.out.println("Enabling " + spell.spellName);
 			}else{
 				spell.isSelected = false;
 			}
 		}
 	}
 	
-	private void addSpellIconsToArray(){
-		
-		EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().player;
-		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+	//Add spells in here
+	private void addSpellToArray(){
 		
 		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, new ResourceLocation(spellLocStr + "earthpillar.png"),new ResourceLocation(spellLocStr + "earthpillardisabled.png"),new ResourceLocation(spellLocStr + "earthpillarselected.png"),2, "2x Earth Rune _pCreates a pillar of earth from the ground."));
 		spells.add(new SpellResource(NameConstants.SPELL_HEAL, new ResourceLocation(spellLocStr + "heal.png"),new ResourceLocation(spellLocStr + "healdisabled.png"),new ResourceLocation(spellLocStr + "healselected.png"),1, "1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
 		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, new ResourceLocation(spellLocStr + "icepillar.png"),new ResourceLocation(spellLocStr + "icepillardisabled.png"),new ResourceLocation(spellLocStr + "icepillarselected.png"),3, "2x Water Rune_pCreates a pillar of ice from the ground."));
 		
-		setSelectedSpell(props.getSpell());
 		
 		Collections.sort(spells, new Comparator<SpellResource>(){
 			@Override
@@ -101,8 +101,12 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	
 	@Override
 	public void initGui(){
+		EntityPlayer player =(EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
+		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+		
 		spells.clear();
-		addSpellIconsToArray();
+		addSpellToArray();
+		setSelectedSpell(props.getSpell());
 		bookTotalPages = (int) Math.ceil(spells.size() / 9.0);
 		Keyboard.enableRepeatEvents(true);
 		buttonList.clear();
@@ -121,6 +125,9 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	@Override
 	public void drawScreen(int var1, int var2, float var3){
 				
+		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
+		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(bookPageTexture);
 		
@@ -170,7 +177,6 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 			SpellResource spell = spells.get(i);
 			
 			if(spell.minx < varx && varx < spell.maxx && spell.miny < vary && spell.maxy > vary){
-				System.out.println("Moused Over");
 				this.RenderTooltip(varx, vary, spell.tooltip);
 			}
 			
@@ -178,13 +184,45 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		return;
 	}
 		
+	@Override
+	protected void mouseClicked(int varx, int vary, int mouseButton){
+		if(mouseButton == 0){
+			
+			EntityPlayer player = (EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
+			ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+			
+			for(int i = ((currentPage + 1) * 9) - 9; i < ((currentPage + 1) * 9); i++){
+				if(i >= spells.size()){
+					return;
+				}
+				
+				SpellResource spell = spells.get(i);
+				
+				if(spell.minx < varx && varx < spell.maxx && spell.miny < vary && spell.maxy > vary && spell.levelReq <= props.getLevel()){
+					System.out.println("Spell Selected");
+					
+					spells.get(i).isSelected = !spells.get(i).isSelected;
+					
+					if(spells.get(i).isSelected){
+						props.setSpell(spells.get(i).spellName);
+					}else{
+						props.setSpell("");
+					}
+					
+				}else{
+					spells.get(i).isSelected = false;
+				}
+			}
+		}
+	}
+	
 	public void drawSkills(){
-		EntityPlayer player = (EntityPlayer) this.mc.player;
+		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 		
 		int currentLevel = props.getLevel();
 		
-		int offsetFromScreenLeft = (width - bookImageWidth) / 2 + 45;
+		int offsetFromScreenLeft = (width - bookImageWidth) / 2 + 40;
 		int offsetFromScreenTop = 35;
 		int spellNumber = 0;
 		int totalRows = 0;
@@ -195,6 +233,8 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 			}
 			
 			SpellResource spell = spells.get(i);
+			System.out.println(spell.spellName + "//"+props.getSpell());
+			
 			
 			if(spellNumber == 3){
 				offsetFromScreenTop += SPELL_ICON_SIZE + 6;
@@ -206,16 +246,19 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 				
 			}
 			if(currentLevel < spell.levelReq){
+				System.out.println("Enabled disabled version");
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 				this.mc.getTextureManager().bindTexture(spell.disabledRsrc);
 				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, 0, 0, 32, 32);
 				
 			}else if(spell.isSelected){
+				System.out.println("Enabled selected version");
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 				this.mc.getTextureManager().bindTexture(spell.selectedRsrc);
 				this.drawTexturedModalRect(offsetFromScreenLeft,offsetFromScreenTop, 0, 0, 32, 32);
 				
 			}else{
+				System.out.println("Enabled normal version");
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 				this.mc.getTextureManager().bindTexture(spell.normalRsrc);
 				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, 0, 0, 32, 32);

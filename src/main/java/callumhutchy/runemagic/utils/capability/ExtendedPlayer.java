@@ -1,5 +1,7 @@
 package callumhutchy.runemagic.utils.capability;
 
+import java.util.concurrent.Callable;
+
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
 
 public class ExtendedPlayer implements IExtendedPlayer {
@@ -53,6 +55,7 @@ public class ExtendedPlayer implements IExtendedPlayer {
 	public String getSpell() {
 		return currentSpell;
 	}
+
 
 
 
