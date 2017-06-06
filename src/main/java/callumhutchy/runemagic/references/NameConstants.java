@@ -7,5 +7,6 @@ public class NameConstants {
 	public static final String SPELL_EARTHPILLAR = "earthpillar";
 	public static final String SPELL_ICEPILLAR = "icepillar";
 	public static final String SPELL_METEOR = "meteor";
+	public static final String SPELL_VAMPIRICTOUCH = "vampirictouch";
 	
 }

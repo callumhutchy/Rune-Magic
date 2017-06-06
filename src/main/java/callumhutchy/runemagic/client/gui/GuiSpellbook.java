@@ -75,6 +75,7 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		spells.add(new SpellResource(NameConstants.SPELL_HEAL, spellSheet1Location,0,0,32,0,64,0,1, "1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
 		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, spellSheet1Location,0,64,32,64,64,64,3, "2x Water Rune_pCreates a pillar of ice from the ground."));
 		spells.add(new SpellResource(NameConstants.SPELL_METEOR, spellSheet1Location,0,96,32,96,64,96,3, "3x Fire Rune_p1x Earth Rune_pSummons a meteor to target location."));
+		spells.add(new SpellResource(NameConstants.SPELL_VAMPIRICTOUCH, spellSheet1Location,0,128,32,128,64,128,3, "3x Blood Rune_pYour attacks steal health from your enemies."));
 		
 		
 		Collections.sort(spells, new Comparator<SpellResource>(){
