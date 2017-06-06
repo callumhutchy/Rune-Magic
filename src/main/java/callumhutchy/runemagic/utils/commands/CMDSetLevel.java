@@ -5,6 +5,7 @@ import java.util.List;
 
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CMDSetLevel extends CommandBase{
 
@@ -44,13 +46,14 @@ public class CMDSetLevel extends CommandBase{
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (sender instanceof EntityPlayer) {
 
-			EntityPlayer player = (EntityPlayer) sender;
+			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().player;
 			ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 			
 			props.setLevel(Integer.parseInt(args[0]));
 			
 			
 			player.sendMessage(new TextComponentString("Set your current level to " + args[0]));
+			
 		}
 
 	}

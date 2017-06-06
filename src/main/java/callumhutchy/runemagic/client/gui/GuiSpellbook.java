@@ -30,9 +30,9 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	private final int bookImageHeight = 192;
 	private final int bookImageWidth = 192;
 	private int currentPage = 0;
-	private static final int bookTotalPages = 2;
+	private static int bookTotalPages = 0;
 	
-	private static ResourceLocation[] bookPageTextures = new ResourceLocation[bookTotalPages];
+	private static ResourceLocation bookPageTexture = new ResourceLocation(rsrcLocStr + "blankpage.png");
 	
 	
 	
@@ -45,9 +45,11 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	private NextPageButton buttonNextPage;
 	private NextPageButton buttonPreviousPage;
 	
+	@CapabilityInject(IExtendedPlayer.class)
+	static Capability<IExtendedPlayer> EXT_PLAYER = null;
+	
 	public GuiSpellbook(){
-		bookPageTextures[0] = new ResourceLocation(rsrcLocStr + "blankpage.png");
-		bookPageTextures[1] = new ResourceLocation(rsrcLocStr + "blankpage.png");
+		
 	}
 	
 	private static final ResourceLocation resourceLocation = new ResourceLocation(rsrcLocStr + "spellbook.png");
@@ -63,10 +65,26 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	
 	private GuiButton doneBtn;
 	
+	private void setSelectedSpell(String spellName){
+		for(SpellResource spell : spells){
+			if(spellName == spell.spellName){
+				spell.isSelected = true;	
+			}else{
+				spell.isSelected = false;
+			}
+		}
+	}
+	
 	private void addSpellIconsToArray(){
+		
+		EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().player;
+		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+		
 		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, new ResourceLocation(spellLocStr + "earthpillar.png"),new ResourceLocation(spellLocStr + "earthpillardisabled.png"),new ResourceLocation(spellLocStr + "earthpillarselected.png"),2));
 		spells.add(new SpellResource(NameConstants.SPELL_HEAL, new ResourceLocation(spellLocStr + "heal.png"),new ResourceLocation(spellLocStr + "healdisabled.png"),new ResourceLocation(spellLocStr + "healselected.png"),1));
 		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, new ResourceLocation(spellLocStr + "icepillar.png"),new ResourceLocation(spellLocStr + "icepillardisabled.png"),new ResourceLocation(spellLocStr + "icepillarselected.png"),3));
+		
+		setSelectedSpell(props.getSpell());
 		
 		Collections.sort(spells, new Comparator<SpellResource>(){
 			@Override
@@ -83,7 +101,9 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	
 	@Override
 	public void initGui(){
+		spells.clear();
 		addSpellIconsToArray();
+		bookTotalPages = (int) Math.ceil(spells.size() / 9.0);
 		Keyboard.enableRepeatEvents(true);
 		buttonList.clear();
 		int offsetFromScreenLeft = (width - bookImageWidth) / 2;
@@ -100,30 +120,18 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	
 	@Override
 	public void drawScreen(int var1, int var2, float var3){
-		/*int xSize = 256;
-		int ySize = 256;
-		int xStart = (width/2) - (xSize/2);
-		int yStart = (height /2) - (ySize / 2);
-		
-		int iconyStart = yStart + 22;
-		int iconxStart = xStart + 17;
-		this.drawDefaultBackground();
-		this.drawBackground();
-		this.drawCenteredString(this.fontRendererObj, "Spellbook:", this.width/2, (this.height /2) - (ySize /2) - 20,16777215);
-		//this.drawSkills();
-		this.IsButtonMouseovered(var1, var2,null);
-		
-		super.drawScreen(var1, var2, var3);*/
-		
+				
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(bookPageTextures[0]);
+		mc.getTextureManager().bindTexture(bookPageTexture);
 		
 		int offsetFromScreenLeft = (width - bookImageWidth) / 2;
 		drawTexturedModalRect(offsetFromScreenLeft, 2,0,0,bookImageWidth, bookImageHeight);
 		int widthOfString;
 		String stringPageIndicator = I18n.format("book.pageIndicator", new Object[] {Integer.valueOf(currentPage + 1), bookTotalPages});
 		widthOfString = fontRendererObj.getStringWidth(stringPageIndicator);
-		fontRendererObj.drawString(stringPageIndicator, offsetFromScreenLeft - widthOfString + bookImageWidth - 44, 18, 0);
+		fontRendererObj.drawString(stringPageIndicator, offsetFromScreenLeft - widthOfString + bookImageWidth - 44, 22, 0);
+		widthOfString = fontRendererObj.getStringWidth("Spellbook");
+		fontRendererObj.drawString("Spellbook", offsetFromScreenLeft - widthOfString + bookImageWidth -70, 14, 0);
 		drawSkills();
 		super.drawScreen(var1, var2, var3);
 		
@@ -155,27 +163,23 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		 return true;
 	}
 	
-	@CapabilityInject(IExtendedPlayer.class)
-	static Capability<IExtendedPlayer> EXT_PLAYER = null;
-	
 	public void drawSkills(){
-		int xSize = 256;
-		int ySize = 256;
-		int xStart = (width / 2) - (xSize / 2);
-		int yStart = (height / 2) - (ySize / 2);
-		int iconyStart = yStart + 22;
-		int iconxStart = xStart + 17;
 		EntityPlayer player = (EntityPlayer) this.mc.player;
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 		
 		int currentLevel = props.getLevel();
-		String currentSpell = props.getSpell();
+		
 		int offsetFromScreenLeft = (width - bookImageWidth) / 2 + 45;
 		int offsetFromScreenTop = 35;
 		int spellNumber = 0;
 		int totalRows = 0;
 		
-		for(SpellResource spell : spells){
+		for(int i = ((currentPage + 1) * 9) - 9; i < ((currentPage + 1) * 9); i++){
+			if(i >= spells.size()){
+				return;
+			}
+			
+			SpellResource spell = spells.get(i);
 			
 			if(spellNumber == 3){
 				offsetFromScreenTop += SPELL_ICON_SIZE + 6;
@@ -186,12 +190,10 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 			if(totalRows == 3){
 				
 			}
-			
 			if(currentLevel < spell.levelReq){
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 				this.mc.getTextureManager().bindTexture(spell.disabledRsrc);
 				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, 0, 0, 32, 32);
-				
 				
 			}else if(spell.isSelected){
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -230,7 +232,7 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 			if(visible){
 				boolean isButtonPressed = (parX >= xPosition && parY >= yPosition && parX < xPosition + width && parY < yPosition + height);
 				GL11.glColor4f(1.0F,1.0F,1.0F,1.0F);
-				mc.getTextureManager().bindTexture(bookPageTextures[0]);
+				mc.getTextureManager().bindTexture(bookPageTexture);
 				int textureX = 0;
 				int textureY = 192;
 				
