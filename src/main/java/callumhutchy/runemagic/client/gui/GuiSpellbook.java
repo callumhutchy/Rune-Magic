@@ -35,14 +35,6 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	
 	private static ResourceLocation bookPageTexture = new ResourceLocation(rsrcLocStr + "blankpage.png");
 	
-	
-	
-	private static ResourceLocation blankPage = new ResourceLocation(rsrcLocStr + "blankpage.png");
-	private static ResourceLocation nextPageButtonSelected = new ResourceLocation(rsrcLocStr + "nextpageselected.png");
-	private static ResourceLocation nextPageButtonUnselected = new ResourceLocation(rsrcLocStr + "nextpageunselected.png");
-	private static ResourceLocation previousPageButtonSelected = new ResourceLocation(rsrcLocStr + "previouspageselected.png");
-	private static ResourceLocation previousPageButtonUnselected = new ResourceLocation(rsrcLocStr + "previouspageunselected.png");
-	
 	private NextPageButton buttonNextPage;
 	private NextPageButton buttonPreviousPage;
 	
@@ -53,9 +45,7 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		
 	}
 	
-	private static final ResourceLocation resourceLocation = new ResourceLocation(rsrcLocStr + "spellbook.png");
-	
-	private static final ResourceLocation earthPillarLocation =new ResourceLocation(rsrcLocStr + "earthpillar.png");
+	private static final ResourceLocation spellSheet1Location =new ResourceLocation(spellLocStr + "spell_sheet_1.png");
 	
 	private ArrayList<SpellResource> spells = new ArrayList<SpellResource>();
 	
@@ -81,9 +71,10 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	//Add spells in here
 	private void addSpellToArray(){
 		
-		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, new ResourceLocation(spellLocStr + "earthpillar.png"),new ResourceLocation(spellLocStr + "earthpillardisabled.png"),new ResourceLocation(spellLocStr + "earthpillarselected.png"),2, "2x Earth Rune _pCreates a pillar of earth from the ground."));
-		spells.add(new SpellResource(NameConstants.SPELL_HEAL, new ResourceLocation(spellLocStr + "heal.png"),new ResourceLocation(spellLocStr + "healdisabled.png"),new ResourceLocation(spellLocStr + "healselected.png"),1, "1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
-		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, new ResourceLocation(spellLocStr + "icepillar.png"),new ResourceLocation(spellLocStr + "icepillardisabled.png"),new ResourceLocation(spellLocStr + "icepillarselected.png"),3, "2x Water Rune_pCreates a pillar of ice from the ground."));
+		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, spellSheet1Location,0,32,32,32,64,32,2, "2x Earth Rune _pCreates a pillar of earth from the ground."));
+		spells.add(new SpellResource(NameConstants.SPELL_HEAL, spellSheet1Location,0,0,32,0,64,0,1, "1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
+		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, spellSheet1Location,0,64,32,64,64,64,3, "2x Water Rune_pCreates a pillar of ice from the ground."));
+		spells.add(new SpellResource(NameConstants.SPELL_METEOR, spellSheet1Location,0,96,32,96,64,96,3, "3x Fire Rune_p1x Earth Rune_pSummons a meteor to target location."));
 		
 		
 		Collections.sort(spells, new Comparator<SpellResource>(){
@@ -156,17 +147,6 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
         return false;
     }
 	
-	public void drawBackground(){
-		int xSize = 256;
-		int ySize = 256;
-		int xStart = (width/2) - (xSize/2);
-		int yStart = (height/2) - (ySize/2);
-		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.getTextureManager().bindTexture(resourceLocation);
-		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize, ySize);
-	}
-	
 	protected void mouseOver(int varx, int vary){
 		
 		for(int i = ((currentPage + 1) * 9) - 9; i < ((currentPage + 1) * 9); i++){
@@ -233,36 +213,27 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 			}
 			
 			SpellResource spell = spells.get(i);
-			System.out.println(spell.spellName + "//"+props.getSpell());
-			
 			
 			if(spellNumber == 3){
 				offsetFromScreenTop += SPELL_ICON_SIZE + 6;
 				spellNumber = 0;
 				totalRows++;
+				offsetFromScreenLeft = (width - bookImageWidth) / 2 + 40;
 			}
 			
 			if(totalRows == 3){
 				
 			}
+			
+			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			this.mc.getTextureManager().bindTexture(spell.rsrc);
+			
 			if(currentLevel < spell.levelReq){
-				System.out.println("Enabled disabled version");
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-				this.mc.getTextureManager().bindTexture(spell.disabledRsrc);
-				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, 0, 0, 32, 32);
-				
+				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, spell.disx, spell.disy, 32, 32);
 			}else if(spell.isSelected){
-				System.out.println("Enabled selected version");
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-				this.mc.getTextureManager().bindTexture(spell.selectedRsrc);
-				this.drawTexturedModalRect(offsetFromScreenLeft,offsetFromScreenTop, 0, 0, 32, 32);
-				
+				this.drawTexturedModalRect(offsetFromScreenLeft,offsetFromScreenTop, spell.selx, spell.sely, 32, 32);
 			}else{
-				System.out.println("Enabled normal version");
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-				this.mc.getTextureManager().bindTexture(spell.normalRsrc);
-				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, 0, 0, 32, 32);
-				
+				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, spell.normx, spell.normy, 32, 32);
 			}
 			spellNumber ++;
 			
@@ -334,11 +305,12 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 class SpellResource{
 
 	boolean isSelected = false;
-	ResourceLocation normalRsrc;
-	ResourceLocation disabledRsrc;
-	ResourceLocation selectedRsrc;
+	ResourceLocation rsrc;
 	String spellName;
 	String tooltip = "Needs a tooltip";
+	
+	int normx, normy, disx, disy, selx, sely;
+	
 	int minx,miny,maxx,maxy;
 	int levelReq;
 	
@@ -350,11 +322,15 @@ class SpellResource{
 	 * @param selectedRsrc - location of selected spell icon
 	 * @param levelReq - level requirment of the spell
 	 */
-	SpellResource(String spellName, ResourceLocation normalRsrc,ResourceLocation disabledRsrc, ResourceLocation selectedRsrc, int levelReq, String tooltip){
+	SpellResource(String spellName, ResourceLocation rsrc,int normx, int normy,int selx,int sely, int disx, int disy, int levelReq, String tooltip){
 		this.spellName = spellName;
-		this.normalRsrc = normalRsrc;
-		this.disabledRsrc = disabledRsrc;
-		this.selectedRsrc = selectedRsrc;
+		this.rsrc = rsrc;
+		this.normx = normx;
+		this.normy = normy;
+		this.disx = disx;
+		this.disy = disy;
+		this.selx = selx;
+		this.sely = sely;
 		this.levelReq = levelReq;
 		this.tooltip = "_l"+this.spellName.substring(0,1).toUpperCase()+this.spellName.substring(1)+":_r _p" + tooltip;
 	}
