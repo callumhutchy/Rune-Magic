@@ -80,9 +80,9 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().player;
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 		
-		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, new ResourceLocation(spellLocStr + "earthpillar.png"),new ResourceLocation(spellLocStr + "earthpillardisabled.png"),new ResourceLocation(spellLocStr + "earthpillarselected.png"),2));
-		spells.add(new SpellResource(NameConstants.SPELL_HEAL, new ResourceLocation(spellLocStr + "heal.png"),new ResourceLocation(spellLocStr + "healdisabled.png"),new ResourceLocation(spellLocStr + "healselected.png"),1));
-		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, new ResourceLocation(spellLocStr + "icepillar.png"),new ResourceLocation(spellLocStr + "icepillardisabled.png"),new ResourceLocation(spellLocStr + "icepillarselected.png"),3));
+		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, new ResourceLocation(spellLocStr + "earthpillar.png"),new ResourceLocation(spellLocStr + "earthpillardisabled.png"),new ResourceLocation(spellLocStr + "earthpillarselected.png"),2, "2x Earth Rune _pCreates a pillar of earth from the ground."));
+		spells.add(new SpellResource(NameConstants.SPELL_HEAL, new ResourceLocation(spellLocStr + "heal.png"),new ResourceLocation(spellLocStr + "healdisabled.png"),new ResourceLocation(spellLocStr + "healselected.png"),1, "1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
+		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, new ResourceLocation(spellLocStr + "icepillar.png"),new ResourceLocation(spellLocStr + "icepillardisabled.png"),new ResourceLocation(spellLocStr + "icepillarselected.png"),3, "2x Water Rune_pCreates a pillar of ice from the ground."));
 		
 		setSelectedSpell(props.getSpell());
 		
@@ -133,12 +133,13 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		widthOfString = fontRendererObj.getStringWidth("Spellbook");
 		fontRendererObj.drawString("Spellbook", offsetFromScreenLeft - widthOfString + bookImageWidth -70, 14, 0);
 		drawSkills();
+		mouseOver(var1,var2);
 		super.drawScreen(var1, var2, var3);
 		
 	}
 
 	@Override
-	protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick){
+	protected void mouseClickMove(int varx, int vary, int lastButtonClicked, long timeSinceMouseClick){
 		
 	}
 	
@@ -159,10 +160,24 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize, ySize);
 	}
 	
-	protected boolean IsButtonMouseovered(int varx, int vary, GuiButton button){
-		 return true;
+	protected void mouseOver(int varx, int vary){
+		
+		for(int i = ((currentPage + 1) * 9) - 9; i < ((currentPage + 1) * 9); i++){
+			if(i >= spells.size()){
+				return;
+			}
+			
+			SpellResource spell = spells.get(i);
+			
+			if(spell.minx < varx && varx < spell.maxx && spell.miny < vary && spell.maxy > vary){
+				System.out.println("Moused Over");
+				this.RenderTooltip(varx, vary, spell.tooltip);
+			}
+			
+		}
+		return;
 	}
-	
+		
 	public void drawSkills(){
 		EntityPlayer player = (EntityPlayer) this.mc.player;
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
@@ -280,6 +295,7 @@ class SpellResource{
 	ResourceLocation disabledRsrc;
 	ResourceLocation selectedRsrc;
 	String spellName;
+	String tooltip = "Needs a tooltip";
 	int minx,miny,maxx,maxy;
 	int levelReq;
 	
@@ -291,11 +307,13 @@ class SpellResource{
 	 * @param selectedRsrc - location of selected spell icon
 	 * @param levelReq - level requirment of the spell
 	 */
-	SpellResource(String spellName, ResourceLocation normalRsrc,ResourceLocation disabledRsrc, ResourceLocation selectedRsrc, int levelReq){
+	SpellResource(String spellName, ResourceLocation normalRsrc,ResourceLocation disabledRsrc, ResourceLocation selectedRsrc, int levelReq, String tooltip){
+		this.spellName = spellName;
 		this.normalRsrc = normalRsrc;
 		this.disabledRsrc = disabledRsrc;
 		this.selectedRsrc = selectedRsrc;
 		this.levelReq = levelReq;
+		this.tooltip = "_l"+this.spellName.substring(0,1).toUpperCase()+this.spellName.substring(1)+":_r _p" + tooltip;
 	}
 
 	
