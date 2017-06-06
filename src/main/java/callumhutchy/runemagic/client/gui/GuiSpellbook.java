@@ -1,5 +1,6 @@
 package callumhutchy.runemagic.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -25,77 +27,91 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiSpellbook extends RuneMagicGuiScreen {
 
-	private static final String rsrcLocStr= ModInfo.MODID + ":textures/gui/";
+	private static final String rsrcLocStr = ModInfo.MODID + ":textures/gui/";
 	private static final String spellLocStr = rsrcLocStr + "spells/";
-	
+
 	private final int bookImageHeight = 192;
 	private final int bookImageWidth = 192;
-	private int currentPage = 0;
-	private static int bookTotalPages = 0;
-	
+	private int currentPage = 1;
+	private static int bookTotalPages = 2;
+
 	private static ResourceLocation bookPageTexture = new ResourceLocation(rsrcLocStr + "blankpage.png");
-	
+
 	private NextPageButton buttonNextPage;
 	private NextPageButton buttonPreviousPage;
+
+	private boolean nextButton, previousButton = false;
 	
 	@CapabilityInject(IExtendedPlayer.class)
 	static Capability<IExtendedPlayer> EXT_PLAYER = null;
-	
-	public GuiSpellbook(){
-		
-	}
-	
-	private static final ResourceLocation spellSheet1Location =new ResourceLocation(spellLocStr + "spell_sheet_1.png");
-	
+
+	private static final ResourceLocation spellSheet1Location = new ResourceLocation(spellLocStr + "spell_sheet_1.png");
+
 	private ArrayList<SpellResource> spells = new ArrayList<SpellResource>();
-	
+
 	public static final int GUI_ID = 20;
-	
+
 	private static final int SPELL_ICON_SIZE = 32;
 	private static final int SPELL_ICON_SPACING = SPELL_ICON_SIZE + 4;
-	
+
 	private GuiButton doneBtn;
-	
-	private void setSelectedSpell(String spellName){
+
+	private void setSelectedSpell(String spellName) {
 		System.out.println(spellName);
-		for(SpellResource spell : spells){
-			if(spellName.equals(spell.spellName)){
+		for (SpellResource spell : spells) {
+			if (spellName.equals(spell.spellName)) {
 				spell.isSelected = true;
 				System.out.println("Enabling " + spell.spellName);
-			}else{
+			} else {
 				spell.isSelected = false;
 			}
 		}
 	}
-	
-	//Add spells in here
-	private void addSpellToArray(){
-		
-		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, spellSheet1Location,0,32,32,32,64,32,2, "2x Earth Rune _pCreates a pillar of earth from the ground."));
-		spells.add(new SpellResource(NameConstants.SPELL_HEAL, spellSheet1Location,0,0,32,0,64,0,1, "1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
-		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, spellSheet1Location,0,64,32,64,64,64,3, "2x Water Rune_pCreates a pillar of ice from the ground."));
-		spells.add(new SpellResource(NameConstants.SPELL_METEOR, spellSheet1Location,0,96,32,96,64,96,3, "3x Fire Rune_p1x Earth Rune_pSummons a meteor to target location."));
-		spells.add(new SpellResource(NameConstants.SPELL_VAMPIRICTOUCH, spellSheet1Location,0,128,32,128,64,128,3, "3x Blood Rune_pYour attacks steal health from your enemies."));
-		
-		
-		Collections.sort(spells, new Comparator<SpellResource>(){
+
+	// Add spells in here
+	private void addSpellToArray() {
+
+		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, spellSheet1Location, 0, 32, 32, 32, 64, 32, 2,
+				"2x Earth Rune _pCreates a pillar of earth from the ground."));
+		spells.add(new SpellResource(NameConstants.SPELL_HEAL, spellSheet1Location, 0, 0, 32, 0, 64, 0, 1,
+				"1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
+		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, spellSheet1Location, 0, 64, 32, 64, 64, 64, 3,
+				"2x Water Rune_pCreates a pillar of ice from the ground."));
+		spells.add(new SpellResource(NameConstants.SPELL_METEOR, spellSheet1Location, 0, 96, 32, 96, 64, 96, 3,
+				"3x Fire Rune_p1x Earth Rune_pSummons a meteor to target location."));
+		spells.add(new SpellResource(NameConstants.SPELL_VAMPIRICTOUCH, spellSheet1Location, 0, 128, 32, 128, 64, 128,
+				3, "3x Blood Rune_pYour attacks steal health from your enemies."));
+		spells.add(new SpellResource(NameConstants.SPELL_REGENERATE, spellSheet1Location, 0, 160, 32, 160, 64, 160, 3,
+				"1x Blood Rune_p1x Nature Rune_pSlowly regenerate your health over time."));
+		spells.add(new SpellResource(NameConstants.SPELL_FLAMEWALL, spellSheet1Location, 0, 192, 32, 192, 64, 192, 3,
+				"2x Fire Rune_pCreate a wall of flames in front of you."));
+		spells.add(new SpellResource(NameConstants.SPELL_SHOCK, spellSheet1Location, 0, 224, 32, 224, 64, 224, 3,
+				"2x Air Rune_pZap your target with lightning."));
+		spells.add(new SpellResource(NameConstants.SPELL_FIERYTOUCH, spellSheet1Location, 96, 0, 128, 0, 160, 0, 3,
+				"3x Fire Rune_pYour attacks set your foe on fire."));
+		spells.add(new SpellResource(NameConstants.SPELL_FIERYBLAST, spellSheet1Location, 96, 32, 128, 32, 160, 32, 3,
+				"2x Fire Rune_pShoot a fiery blast at target."));
+
+		Collections.sort(spells, new Comparator<SpellResource>() {
 			@Override
-			public int compare(SpellResource s1, SpellResource s2){
-				if(s1.levelReq > s2.levelReq)
+			public int compare(SpellResource s1, SpellResource s2) {
+				if (s1.levelReq > s2.levelReq)
 					return 1;
-				if(s1.levelReq < s2.levelReq)
+				if (s1.levelReq < s2.levelReq)
 					return -1;
 				return 0;
 			}
 		});
-	
+
 	}
-	
+
 	@Override
-	public void initGui(){
-		EntityPlayer player =(EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
-		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+	public void initGui() {
 		
+		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players
+				.get(Minecraft.getMinecraft().player.getUniqueID());
+		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+
 		spells.clear();
 		addSpellToArray();
 		setSelectedSpell(props.getSpell());
@@ -103,227 +119,258 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 		Keyboard.enableRepeatEvents(true);
 		buttonList.clear();
 		int offsetFromScreenLeft = (width - bookImageWidth) / 2;
-		buttonList.add(buttonNextPage = new NextPageButton(1, offsetFromScreenLeft + 120, 156, true));
-		buttonList.add(buttonPreviousPage = new NextPageButton(2, offsetFromScreenLeft + 38, 156, false));
+		buttonList.add(buttonNextPage = new NextPageButton(4, offsetFromScreenLeft + 120, 156, true));
+		buttonList.add(buttonPreviousPage = new NextPageButton(5, offsetFromScreenLeft + 38, 156, false));
 		
-	}
-	
-	@Override
-	public void updateScreen(){
-		buttonNextPage.visible = (currentPage < bookTotalPages -1);
-		buttonPreviousPage.visible = currentPage > 0;
-	}
-	
-	@Override
-	public void drawScreen(int var1, int var2, float var3){
-				
-		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
-		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
-		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(bookPageTexture);
-		
-		int offsetFromScreenLeft = (width - bookImageWidth) / 2;
-		drawTexturedModalRect(offsetFromScreenLeft, 2,0,0,bookImageWidth, bookImageHeight);
-		int widthOfString;
-		String stringPageIndicator = I18n.format("book.pageIndicator", new Object[] {Integer.valueOf(currentPage + 1), bookTotalPages});
-		widthOfString = fontRendererObj.getStringWidth(stringPageIndicator);
-		fontRendererObj.drawString(stringPageIndicator, offsetFromScreenLeft - widthOfString + bookImageWidth - 44, 22, 0);
-		widthOfString = fontRendererObj.getStringWidth("Spellbook");
-		fontRendererObj.drawString("Spellbook", offsetFromScreenLeft - widthOfString + bookImageWidth -70, 14, 0);
-		drawSkills();
-		mouseOver(var1,var2);
-		super.drawScreen(var1, var2, var3);
-		
+
 	}
 
 	@Override
-	protected void mouseClickMove(int varx, int vary, int lastButtonClicked, long timeSinceMouseClick){
-		
+	public void updateScreen() {
+		buttonNextPage.visible = (currentPage < bookTotalPages);
+		buttonPreviousPage.visible = (currentPage > 1);
 	}
-	
+
 	@Override
-	public boolean doesGuiPauseGame()
-    {
-        return false;
-    }
-	
-	protected void mouseOver(int varx, int vary){
-		
-		for(int i = ((currentPage + 1) * 9) - 9; i < ((currentPage + 1) * 9); i++){
-			if(i >= spells.size()){
+	public void drawScreen(int var1, int var2, float var3) {
+
+		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players
+				.get(Minecraft.getMinecraft().player.getUniqueID());
+		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(bookPageTexture);
+
+		int offsetFromScreenLeft = (width - bookImageWidth) / 2;
+		drawTexturedModalRect(offsetFromScreenLeft, 2, 0, 0, bookImageWidth, bookImageHeight);
+		int widthOfString;
+		String stringPageIndicator = I18n.format("book.pageIndicator",
+				new Object[] { Integer.valueOf(currentPage), bookTotalPages });
+		widthOfString = fontRendererObj.getStringWidth(stringPageIndicator);
+		fontRendererObj.drawString(stringPageIndicator, offsetFromScreenLeft - widthOfString + bookImageWidth - 44, 22,
+				0);
+		widthOfString = fontRendererObj.getStringWidth("Spellbook");
+		fontRendererObj.drawString("Spellbook", offsetFromScreenLeft - widthOfString + bookImageWidth - 70, 14, 0);
+		drawSkills();
+		mouseOver(var1, var2);
+		super.drawScreen(var1, var2, var3);
+
+	}
+
+	@Override
+	protected void mouseClickMove(int varx, int vary, int lastButtonClicked, long timeSinceMouseClick) {
+
+	}
+
+	@Override
+	public boolean doesGuiPauseGame() {
+		return false;
+	}
+
+	protected void mouseOver(int varx, int vary) {
+
+		for (int i = ((currentPage) * 9) - 9; i < ((currentPage) * 9); i++) {
+			if (i >= spells.size()) {
 				return;
 			}
-			
+
 			SpellResource spell = spells.get(i);
-			
-			if(spell.minx < varx && varx < spell.maxx && spell.miny < vary && spell.maxy > vary){
+
+			if (spell.minx < varx && varx < spell.maxx && spell.miny < vary && spell.maxy > vary) {
 				this.RenderTooltip(varx, vary, spell.tooltip);
 			}
-			
+
 		}
-		return;
 	}
-		
+
 	@Override
-	protected void mouseClicked(int varx, int vary, int mouseButton){
-		if(mouseButton == 0){
-			
-			EntityPlayer player = (EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
+	protected void mouseClicked(int varx, int vary, int mouseButton) throws IOException {
+		super.mouseClicked(varx, vary, mouseButton);
+		if (mouseButton == 0) {
+
+			EntityPlayer player = (EntityPlayer) RuneMagic.instance.players
+					.get(Minecraft.getMinecraft().player.getUniqueID());
 			ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
-			
-			for(int i = ((currentPage + 1) * 9) - 9; i < ((currentPage + 1) * 9); i++){
-				if(i >= spells.size()){
+
+			for (int i = ((currentPage) * 9) - 9; i < ((currentPage) * 9); i++) {
+				if (i >= spells.size()) {
 					return;
 				}
-				
+
 				SpellResource spell = spells.get(i);
-				
-				if(spell.minx < varx && varx < spell.maxx && spell.miny < vary && spell.maxy > vary && spell.levelReq <= props.getLevel()){
+
+				if (spell.minx < varx && varx < spell.maxx && spell.miny < vary && spell.maxy > vary
+						&& spell.levelReq <= props.getLevel()) {
 					System.out.println("Spell Selected");
-					
+
 					spells.get(i).isSelected = !spells.get(i).isSelected;
-					
-					if(spells.get(i).isSelected){
+
+					if (spells.get(i).isSelected) {
 						props.setSpell(spells.get(i).spellName);
-					}else{
+					} else {
 						props.setSpell("");
 					}
-					
-				}else{
+
+				} else {
 					spells.get(i).isSelected = false;
 				}
 			}
 		}
+		
 	}
-	
-	public void drawSkills(){
-		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players.get(Minecraft.getMinecraft().player.getUniqueID()) ;
+
+	public void drawSkills() {
+		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players
+				.get(Minecraft.getMinecraft().player.getUniqueID());
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
-		
+
 		int currentLevel = props.getLevel();
-		
+
 		int offsetFromScreenLeft = (width - bookImageWidth) / 2 + 40;
 		int offsetFromScreenTop = 35;
 		int spellNumber = 0;
 		int totalRows = 0;
-		
-		for(int i = ((currentPage + 1) * 9) - 9; i < ((currentPage + 1) * 9); i++){
-			if(i >= spells.size()){
+
+		for (int i = ((currentPage) * 9) - 9; i < ((currentPage) * 9); i++) {
+			if (i >= spells.size()) {
 				return;
 			}
-			
+
 			SpellResource spell = spells.get(i);
-			
-			if(spellNumber == 3){
+
+			if (spellNumber == 3) {
 				offsetFromScreenTop += SPELL_ICON_SIZE + 6;
 				spellNumber = 0;
 				totalRows++;
 				offsetFromScreenLeft = (width - bookImageWidth) / 2 + 40;
 			}
-			
-			if(totalRows == 3){
-				
+
+			if (totalRows == 3) {
+
 			}
-			
+
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			this.mc.getTextureManager().bindTexture(spell.rsrc);
-			
-			if(currentLevel < spell.levelReq){
+
+			if (currentLevel < spell.levelReq) {
 				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, spell.disx, spell.disy, 32, 32);
-			}else if(spell.isSelected){
-				this.drawTexturedModalRect(offsetFromScreenLeft,offsetFromScreenTop, spell.selx, spell.sely, 32, 32);
-			}else{
+			} else if (spell.isSelected) {
+				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, spell.selx, spell.sely, 32, 32);
+			} else {
 				this.drawTexturedModalRect(offsetFromScreenLeft, offsetFromScreenTop, spell.normx, spell.normy, 32, 32);
 			}
-			spellNumber ++;
-			
+			spellNumber++;
+
 			spell.minx = offsetFromScreenLeft;
 			spell.maxx = offsetFromScreenLeft + SPELL_ICON_SPACING;
 			spell.miny = offsetFromScreenTop;
 			spell.maxy = offsetFromScreenTop + SPELL_ICON_SPACING;
-			
-			offsetFromScreenLeft +=  SPELL_ICON_SPACING;
+
+			offsetFromScreenLeft += SPELL_ICON_SPACING;
 		}
 		
-	}
-	
-	@SideOnly(Side.CLIENT)
-	static class NextPageButton extends GuiButton{
-		private final boolean isNextButton;
+		if(currentPage < bookTotalPages){
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			mc.getTextureManager().bindTexture(bookPageTexture);
+			drawTexturedModalRect((width - bookImageWidth) / 2 + 120, 156, 0, 192, 23, 13);
+			nextButton = true;
+		}else{
+			nextButton = false;
+		}
 		
-		public NextPageButton(int buttonID, int posX, int posY, boolean isNextButton){
-			super(buttonID,posX, posY, 23,13,"");
+		if(currentPage > 1){
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			mc.getTextureManager().bindTexture(bookPageTexture);
+			drawTexturedModalRect((width - bookImageWidth) / 2 + 38, 156, 0, 205, 23, 13);
+			previousButton = true;
+		}else{
+			previousButton = false;
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	static class NextPageButton extends GuiButton {
+		private final boolean isNextButton;
+
+		public NextPageButton(int buttonID, int posX, int posY, boolean isNextButton) {
+			super(buttonID, posX, posY, 23, 13, "");
 			this.isNextButton = isNextButton;
 		}
-		
+
 		@Override
-		public void drawButton(Minecraft mc, int parX, int parY){
-			if(visible){
-				boolean isButtonPressed = (parX >= xPosition && parY >= yPosition && parX < xPosition + width && parY < yPosition + height);
-				GL11.glColor4f(1.0F,1.0F,1.0F,1.0F);
+		public void drawButton(Minecraft mc, int parX, int parY) {
+			if (visible) {
+				boolean isButtonPressed = (parX >= xPosition && parY >= yPosition && parX < xPosition + width
+						&& parY < yPosition + height);
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 				mc.getTextureManager().bindTexture(bookPageTexture);
 				int textureX = 0;
 				int textureY = 192;
-				
-				if(isButtonPressed){
+
+				if (isButtonPressed) {
 					textureX += 23;
 				}
-				
-				if(!isNextButton){
+
+				if (!isNextButton) {
 					textureY += 13;
 				}
-				
-				drawTexturedModalRect(xPosition, yPosition, textureX, textureY, 23,13);
-				
+
+				drawTexturedModalRect(xPosition, yPosition, textureX, textureY, 23, 13);
+
 			}
 		}
-		
-		
-		
+
 	}
-	
+
 	@Override
-	protected void actionPerformed(GuiButton btn){
-		if(btn == buttonNextPage){
-			if(currentPage < bookTotalPages -1){
-				++currentPage;
+	protected void actionPerformed(GuiButton btn) {
+		if (btn == buttonNextPage) {
+			
+			if (currentPage < bookTotalPages) {
+				currentPage++;
+				System.out.println(currentPage + " // " + bookTotalPages);
 			}
-		}else if(btn == buttonPreviousPage){
-			if(currentPage > 0){
-				--currentPage;
+		} else if (btn == buttonPreviousPage) {
+			if (currentPage > 1) {
+				currentPage--;
 			}
 		}
 	}
-	
+
 	@Override
-    public void onGuiClosed() 
-    {
-     
-    }
-	
+	public void onGuiClosed() {
+
+	}
+
 }
-class SpellResource{
+
+class SpellResource {
 
 	boolean isSelected = false;
 	ResourceLocation rsrc;
 	String spellName;
 	String tooltip = "Needs a tooltip";
-	
+
 	int normx, normy, disx, disy, selx, sely;
-	
-	int minx,miny,maxx,maxy;
+
+	int minx, miny, maxx, maxy;
 	int levelReq;
-	
+
 	/**
 	 * 
-	 * @param spellName - internal name of the spell
-	 * @param normalRsrc - location of normal spell icon
-	 * @param disabledRsrc - location of disabled spell icon
-	 * @param selectedRsrc - location of selected spell icon
-	 * @param levelReq - level requirment of the spell
+	 * @param spellName
+	 *            - internal name of the spell
+	 * @param normalRsrc
+	 *            - location of normal spell icon
+	 * @param disabledRsrc
+	 *            - location of disabled spell icon
+	 * @param selectedRsrc
+	 *            - location of selected spell icon
+	 * @param levelReq
+	 *            - level requirment of the spell
 	 */
-	SpellResource(String spellName, ResourceLocation rsrc,int normx, int normy,int selx,int sely, int disx, int disy, int levelReq, String tooltip){
+	SpellResource(String spellName, ResourceLocation rsrc, int normx, int normy, int selx, int sely, int disx, int disy,
+			int levelReq, String tooltip) {
 		this.spellName = spellName;
 		this.rsrc = rsrc;
 		this.normx = normx;
@@ -333,10 +380,8 @@ class SpellResource{
 		this.selx = selx;
 		this.sely = sely;
 		this.levelReq = levelReq;
-		this.tooltip = "_l"+this.spellName.substring(0,1).toUpperCase()+this.spellName.substring(1)+":_r _p" + tooltip;
+		this.tooltip = "_l" + this.spellName.substring(0, 1).toUpperCase() + this.spellName.substring(1) + ":_r _p"
+				+ tooltip;
 	}
 
-	
-	
-	
 }
