@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
-@Mod(modid = ModInfo.MODID, version = ModInfo.VERSION, name = ModInfo.MODNAME)
+@Mod(modid = ModInfo.MODID, version = ModInfo.VERSION, name = ModInfo.MODNAME, updateJSON = ModInfo.UPDATE_JSON)
 public class RuneMagic {
 
 	@SidedProxy(clientSide=ModInfo.CLIENT_PROXY, serverSide=ModInfo.SERVER_PROXY)

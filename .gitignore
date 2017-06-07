@@ -3,7 +3,6 @@
 
 ## gradle
 /.gradle
-/build
 /gradle
 /gradlew
 /gradlew.bat
@@ -18,6 +17,12 @@
 /.classpath
 /.project
 /bin
+/build/tmp
+/build/resources
+/build/classes
+/build/sources
+/saves
+
 
 ## intellij
 /out
