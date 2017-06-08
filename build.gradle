@@ -283,8 +283,6 @@ task setDevVersion << {
         config.toProperties().store(it, "")
     }
          
-             
-         
          }
 
 task getModData << {
