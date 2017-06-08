@@ -13,6 +13,7 @@ public class Spell {
 	protected float spellDamage;
 	protected ArrayList<RuneCost> runeCost;
 	protected Element spellElement;
+	protected String description;
 
 	
 	/**
@@ -24,15 +25,24 @@ public class Spell {
 	 * @param runes
 	 * @param element
 	 */
-	public Spell(String spellName, int levelReq, int exp, int damage, ArrayList<RuneCost> runes, Element element) {
+	public Spell(String spellName, int levelReq, int exp, int damage, ArrayList<RuneCost> runes, Element element, String description) {
 		this.setSpellName(spellName);
 		this.setSpellLevelRequirment(levelReq);
 		this.setSpellExp(exp);
 		this.setSpellDamage(damage);
 		this.setRuneCost(runes);
 		this.setSpellElement(element);
+		this.setDescription(description);
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getSpellName() {
 		return spellName;
 	}

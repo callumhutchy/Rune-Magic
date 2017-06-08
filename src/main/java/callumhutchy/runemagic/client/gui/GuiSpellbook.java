@@ -10,12 +10,13 @@ import org.lwjgl.opengl.GL11;
 
 import callumhutchy.runemagic.RuneMagic;
 import callumhutchy.runemagic.references.ModInfo;
-import callumhutchy.runemagic.references.NameConstants;
+import callumhutchy.runemagic.references.spells.RuneCost;
+import callumhutchy.runemagic.references.spells.Spell;
+import callumhutchy.runemagic.spells.Spells;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -58,12 +59,12 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 
 	private void setSelectedSpell(String spellName) {
 		System.out.println(spellName);
-		for (SpellResource spell : spells) {
-			if (spellName.equals(spell.spellName)) {
-				spell.isSelected = true;
-				System.out.println("Enabling " + spell.spellName);
+		for (SpellResource spellRsrc : spells) {
+			if (spellName.equals(spellRsrc.spell.spellName)) {
+				spellRsrc.isSelected = true;
+				System.out.println("Enabling " + spellRsrc.spell.spellName);
 			} else {
-				spell.isSelected = false;
+				spellRsrc.isSelected = false;
 			}
 		}
 	}
@@ -71,26 +72,26 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 	// Add spells in here
 	private void addSpellToArray() {
 
-		spells.add(new SpellResource(NameConstants.SPELL_EARTHPILLAR, spellSheet1Location, 0, 32, 32, 32, 64, 32, 2,
-				"2x Earth Rune _pCreates a pillar of earth from the ground."));
-		spells.add(new SpellResource(NameConstants.SPELL_HEAL, spellSheet1Location, 0, 0, 32, 0, 64, 0, 1,
-				"1x Air Rune _p1x Earth Rune_pHeals the user for a small amount."));
-		spells.add(new SpellResource(NameConstants.SPELL_ICEPILLAR, spellSheet1Location, 0, 64, 32, 64, 64, 64, 3,
-				"2x Water Rune_pCreates a pillar of ice from the ground."));
-		spells.add(new SpellResource(NameConstants.SPELL_METEOR, spellSheet1Location, 0, 96, 32, 96, 64, 96, 3,
-				"3x Fire Rune_p1x Earth Rune_pSummons a meteor to target location."));
-		spells.add(new SpellResource(NameConstants.SPELL_VAMPIRICTOUCH, spellSheet1Location, 0, 128, 32, 128, 64, 128,
-				3, "3x Blood Rune_pYour attacks steal health from your enemies."));
-		spells.add(new SpellResource(NameConstants.SPELL_REGENERATE, spellSheet1Location, 0, 160, 32, 160, 64, 160, 3,
-				"1x Blood Rune_p1x Nature Rune_pSlowly regenerate your health over time."));
-		spells.add(new SpellResource(NameConstants.SPELL_FLAMEWALL, spellSheet1Location, 0, 192, 32, 192, 64, 192, 3,
-				"2x Fire Rune_pCreate a wall of flames in front of you."));
-		spells.add(new SpellResource(NameConstants.SPELL_SHOCK, spellSheet1Location, 0, 224, 32, 224, 64, 224, 3,
-				"2x Air Rune_pZap your target with lightning."));
-		spells.add(new SpellResource(NameConstants.SPELL_FIERYTOUCH, spellSheet1Location, 96, 0, 128, 0, 160, 0, 3,
-				"3x Fire Rune_pYour attacks set your foe on fire."));
-		spells.add(new SpellResource(NameConstants.SPELL_FIERYBLAST, spellSheet1Location, 96, 32, 128, 32, 160, 32, 3,
-				"2x Fire Rune_pShoot a fiery blast at target."));
+		spells.add(new SpellResource(Spells.earthPillar, spellSheet1Location, 0, 32, 32, 32, 64, 32, 
+				"2x Earth Rune _p"));
+		spells.add(new SpellResource(Spells.heal, spellSheet1Location, 0, 0, 32, 0, 64, 0, 
+				"1x Air Rune _p1x Earth Rune_p"));
+		spells.add(new SpellResource(Spells.icePillar, spellSheet1Location, 0, 64, 32, 64, 64, 64, 
+				"2x Water Rune_p"));
+		spells.add(new SpellResource(Spells.meteor, spellSheet1Location, 0, 96, 32, 96, 64, 96, 
+				"3x Fire Rune_p1x Earth Rune_p"));
+		spells.add(new SpellResource(Spells.vampiricTouch, spellSheet1Location, 0, 128, 32, 128, 64, 128,
+				 "3x Blood Rune_p"));
+		spells.add(new SpellResource(Spells.regenerate, spellSheet1Location, 0, 160, 32, 160, 64, 160,
+				"1x Blood Rune_p1x Nature Rune_p"));
+		spells.add(new SpellResource(Spells.flameWall, spellSheet1Location, 0, 192, 32, 192, 64, 192,
+				"2x Fire Rune_p"));
+		spells.add(new SpellResource(Spells.shock, spellSheet1Location, 0, 224, 32, 224, 64, 224,
+				"2x Air Rune_p"));
+		spells.add(new SpellResource(Spells.fieryTouch, spellSheet1Location, 96, 0, 128, 0, 160, 0,
+				"3x Fire Rune_p"));
+		spells.add(new SpellResource(Spells.fieryBlast, spellSheet1Location, 96, 32, 128, 32, 160, 32,
+				"2x Fire Rune_p"));
 
 		Collections.sort(spells, new Comparator<SpellResource>() {
 			@Override
@@ -206,7 +207,7 @@ public class GuiSpellbook extends RuneMagicGuiScreen {
 					spells.get(i).isSelected = !spells.get(i).isSelected;
 
 					if (spells.get(i).isSelected) {
-						props.setSpell(spells.get(i).spellName);
+						props.setSpell(spells.get(i).spell.spellName);
 					} else {
 						props.setSpell("");
 					}
@@ -348,7 +349,7 @@ class SpellResource {
 
 	boolean isSelected = false;
 	ResourceLocation rsrc;
-	String spellName;
+	Spell spell;
 	String tooltip = "Needs a tooltip";
 
 	int normx, normy, disx, disy, selx, sely;
@@ -369,9 +370,8 @@ class SpellResource {
 	 * @param levelReq
 	 *            - level requirment of the spell
 	 */
-	SpellResource(String spellName, ResourceLocation rsrc, int normx, int normy, int selx, int sely, int disx, int disy,
-			int levelReq, String tooltip) {
-		this.spellName = spellName;
+	SpellResource(Spell spell, ResourceLocation rsrc, int normx, int normy, int selx, int sely, int disx, int disy,String tooltip) {
+		this.spell = spell;
 		this.rsrc = rsrc;
 		this.normx = normx;
 		this.normy = normy;
@@ -379,9 +379,21 @@ class SpellResource {
 		this.disy = disy;
 		this.selx = selx;
 		this.sely = sely;
-		this.levelReq = levelReq;
-		this.tooltip = "_l" + this.spellName.substring(0, 1).toUpperCase() + this.spellName.substring(1) + ":_r _p"
-				+ tooltip;
+		this.levelReq = spell.getSpellLevelRequirment();
+		this.tooltip = "_l" + this.spell.spellName.substring(0, 1).toUpperCase() + this.spell.spellName.substring(1) + ":_r _p"
+				+ generateTooltip(spell.getRuneCost()) + spell.getDescription();
 	}
+	
+	private String generateTooltip(ArrayList<RuneCost> runes){
+		String runeCostString = "";
+		for(RuneCost rune : runes){
+			runeCostString += rune.getAmount() +"x " +rune.getRune().getUnlocalizedName() + "_p";
+		}
+		return runeCostString;
+		
+		
+		
+	}
+	
 
 }

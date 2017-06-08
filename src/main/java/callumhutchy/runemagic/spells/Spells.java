@@ -11,10 +11,19 @@ import net.minecraft.item.Item;
 
 public class Spells {
 
-	public static Spell fieryBlast;
+	public static Spell fieryBlast, heal, earthPillar, icePillar, meteor, vampiricTouch, regenerate, flameWall,shock,fieryTouch;
 	
 	public static void init(){
-		fieryBlast = new Spell(NameConstants.SPELL_FIERYBLAST, 2, 2, 3,addRuneToArray(runeCost("firerune",2)), null);
+		fieryBlast = new Spell(NameConstants.SPELL_FIERYBLAST, 2, 2, 3,addRuneToArray(runeCost("firerune",2)), Elements.fire,"Shoot a fiery blast at target.");
+		heal = new Spell(NameConstants.SPELL_HEAL,1,2,3,addRuneToArray(runeCost("naturerune",1)), null,"Heals the user for a small amount.");
+		earthPillar = new Spell(NameConstants.SPELL_EARTHPILLAR, 4, 3, 0, addRuneToArray(runeCost("earthrune",2)), Elements.earth, "Creates a pillar of earth from the ground.");
+		icePillar = new Spell(NameConstants.SPELL_ICEPILLAR, 5,4,0, addRuneToArray(runeCost("waterrune",2)),Elements.water, "Creates a pillar of ice from the ground.");
+		meteor = new Spell(NameConstants.SPELL_METEOR, 3, 3, 5, addRuneToArray(runeCost("firerune",3), runeCost("earthrune",1)), Elements.fire,"Summons a meteor to target location.");
+		vampiricTouch = new Spell(NameConstants.SPELL_VAMPIRICTOUCH, 7 , 4, 3, addRuneToArray(runeCost("bloodrune",3)), null,"Your attacks steal health from your enemies.");
+		regenerate = new Spell(NameConstants.SPELL_REGENERATE, 8, 4, 0, addRuneToArray(runeCost("bloodrune",1), runeCost("naturerune",1)),null,"Slowly regenerate your health over time.");
+		flameWall = new Spell(NameConstants.SPELL_FLAMEWALL, 5,3, 0, addRuneToArray(runeCost("firerune",2)), Elements.fire,"Create a wall of flames in front of you.");
+		shock = new Spell(NameConstants.SPELL_SHOCK, 6,4, 4, addRuneToArray(runeCost("airrune",2)),Elements.air,"Zap your target with lightning.");
+		fieryTouch = new Spell(NameConstants.SPELL_FIERYTOUCH, 10, 6, 0, addRuneToArray(runeCost("firerune",3)), Elements.fire,"Your attacks set your foe on fire.");
 	}
 	
 	private static RuneCost runeCost(String runeName, int amount){
