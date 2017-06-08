@@ -191,7 +191,7 @@ task incrementPatch << {
         def patch = Integer.parseInt(values[2])
         
         oldVersion = major + "." + minor + "." + patch
-        newVersion = config.mc_version + "_" +  major + "." + minor + "." + (patch + 1)  + "." + config.build_number
+        newVersion = major + "." + minor + "." + (patch + 1)
    
         
     println(":incrementPatch - Current Version: " + oldVersion)
@@ -218,7 +218,7 @@ task incrementMinor << {
         def patch = Integer.parseInt(values[2])
         
         oldVersion = major + "." + minor + "." + patch
-        newVersion = config.mc_version + "_" +  major + "." + (minor + 1) + ".0"  + "." + config.build_number
+        newVersion = major + "." + (minor + 1) + ".0"
      
     println(":incrementMinor - Current Version: " + oldVersion)
     println(":incrementMinor - New Version:     " + newVersion)
@@ -244,7 +244,7 @@ task incrementMajor << {
         def patch = Integer.parseInt(values[2])
         
         oldVersion = major + "." + minor + "." + patch
-        newVersion = config.mc_version + "_" + (major + 1) + ".0.0" + "." + config.build_number
+        newVersion = (major + 1) + ".0.0"
     
     println(":incrementMinor - Current Version: " + oldVersion)
     println(":incrementMinor - New Version:     " + newVersion)
