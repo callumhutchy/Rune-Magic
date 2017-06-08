@@ -1,4 +1,4 @@
-package callumhutchy.runemagic.spells;
+package callumhutchy.runemagic.references.spells;
 
 import callumhutchy.runemagic.items.Rune;
 

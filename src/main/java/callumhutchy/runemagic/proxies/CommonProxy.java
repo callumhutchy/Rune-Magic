@@ -5,6 +5,8 @@ import callumhutchy.runemagic.blocks.Blocks;
 import callumhutchy.runemagic.blocks.models.tileentities.BlockTileEntities;
 import callumhutchy.runemagic.client.gui.GuiHandler;
 import callumhutchy.runemagic.items.Items;
+import callumhutchy.runemagic.spells.Elements;
+import callumhutchy.runemagic.spells.Spells;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayerStorage;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
@@ -57,7 +59,8 @@ public class CommonProxy implements IProxy{
 
 	@Override
 	public void onPostInit(FMLPostInitializationEvent event) {
-		
+		Elements.init();
+		Spells.init();
 		
 	}
 

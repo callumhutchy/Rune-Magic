@@ -1,24 +1,46 @@
-package callumhutchy.runemagic.spells;
+package callumhutchy.runemagic.references.spells;
 
 import java.util.ArrayList;
 
 import callumhutchy.runemagic.items.Rune;
 
 public class Spell {
+	public String spellName;
+	
+
 	protected int spellExp;
 	protected int spellLevelRequirment;
 	protected float spellDamage;
-	protected ArrayList<Rune> runeCost;
+	protected ArrayList<RuneCost> runeCost;
 	protected Element spellElement;
 
-	public Spell(int levelReq, int exp, int damage, ArrayList<Rune> rune, Element element) {
+	
+	/**
+	 * 
+	 * @param spellName
+	 * @param levelReq
+	 * @param exp
+	 * @param damage
+	 * @param runes
+	 * @param element
+	 */
+	public Spell(String spellName, int levelReq, int exp, int damage, ArrayList<RuneCost> runes, Element element) {
+		this.setSpellName(spellName);
 		this.setSpellLevelRequirment(levelReq);
 		this.setSpellExp(exp);
 		this.setSpellDamage(damage);
-		this.setRuneCost(rune);
+		this.setRuneCost(runes);
 		this.setSpellElement(element);
 	}
 	
+	public String getSpellName() {
+		return spellName;
+	}
+
+
+	private void setSpellName(String spellName) {
+		this.spellName = spellName;
+	}
 	
 	public int getSpellExp() {
 		return spellExp;
@@ -44,11 +66,11 @@ public class Spell {
 		this.spellDamage = spellDamage;
 	}
 
-	public ArrayList<Rune> getRuneCost() {
+	public ArrayList<RuneCost> getRuneCost() {
 		return runeCost;
 	}
 
-	public void setRuneCost(ArrayList<Rune> runeCost) {
+	public void setRuneCost(ArrayList<RuneCost> runeCost) {
 		this.runeCost = runeCost;
 	}
 
@@ -63,3 +85,4 @@ public class Spell {
 	
 
 }
+
