@@ -282,7 +282,8 @@ task setDevVersion << {
     configFile.withWriter {
         config.toProperties().store(it, "")
     }
-      
+     
+     
 }
 
 task getModData << {
