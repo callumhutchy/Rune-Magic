@@ -18,6 +18,8 @@ public class Items {
 
 	public static BasicMagicItem blankRune;
 
+	public static Staff staff;
+	
 	public static Spellbook spellbook;
 	public static TransplanarLexicon transplanarLexicon;
 	
@@ -27,6 +29,8 @@ public class Items {
 		spellbook = new Spellbook("spellbook");
 		
 		transplanarLexicon = new TransplanarLexicon("transplanarlexicon");
+		
+		staff = new Staff("staff", null);
 
 		Runes[] runes = Runes.values();
 		for (Runes rune : runes) {
@@ -42,6 +46,7 @@ public class Items {
 		
 		registerMaps(maps);
 		
+		register(staff);
 		register(blankRune);
 		register(spellbook);
 		register(transplanarLexicon);

@@ -13,6 +13,8 @@ public class Spells {
 
 	public static Spell fieryBlast, heal, earthPillar, icePillar, meteor, vampiricTouch, regenerate, flameWall,shock,fieryTouch;
 	
+	private static ArrayList<Spell> spells = new ArrayList<Spell>();
+	
 	public static void init(){
 		fieryBlast = new Spell(NameConstants.SPELL_FIERYBLAST, 2, 2, 3,addRuneToArray(runeCost("firerune",2)), Elements.fire,"Shoot a fiery blast at target.");
 		heal = new Spell(NameConstants.SPELL_HEAL,1,2,3,addRuneToArray(runeCost("naturerune",1)), null,"Heals the user for a small amount.");
@@ -24,6 +26,18 @@ public class Spells {
 		flameWall = new Spell(NameConstants.SPELL_FLAMEWALL, 5,3, 0, addRuneToArray(runeCost("firerune",2)), Elements.fire,"Create a wall of flames in front of you.");
 		shock = new Spell(NameConstants.SPELL_SHOCK, 6,4, 4, addRuneToArray(runeCost("airrune",2)),Elements.air,"Zap your target with lightning.");
 		fieryTouch = new Spell(NameConstants.SPELL_FIERYTOUCH, 10, 6, 0, addRuneToArray(runeCost("firerune",3)), Elements.fire,"Your attacks set your foe on fire.");
+	
+		spells.add(fieryBlast);
+		spells.add(heal);
+		spells.add(earthPillar);
+		spells.add(icePillar);
+		spells.add(meteor);
+		spells.add(vampiricTouch);
+		spells.add(regenerate);
+		spells.add(flameWall);
+		spells.add(shock);
+		spells.add(fieryTouch);
+	
 	}
 	
 	private static RuneCost runeCost(String runeName, int amount){
@@ -39,5 +53,15 @@ public class Spells {
 		}
 		return returnArray;
 	}
+	
+	public static Spell getSpellByName(String name){
+		for(Spell spell : spells){
+			if(spell.spellName == name){
+				return spell;
+			}
+		}
+		return null;
+	}
+	
 	
 }

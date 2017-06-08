@@ -7,6 +7,7 @@ import callumhutchy.runemagic.references.NameConstants;
 import callumhutchy.runemagic.references.spells.Element;
 import callumhutchy.runemagic.references.spells.RuneCost;
 import callumhutchy.runemagic.references.spells.Spell;
+import callumhutchy.runemagic.spells.Spells;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
 import net.minecraft.client.Minecraft;
@@ -26,9 +27,10 @@ public class Staff extends BasicMagicItem {
 	public Element staffElement;
 	public int runesProvided;
 
-	public Staff(String unlocalisedName) {
+	public Staff(String unlocalisedName, Element staffElement) {
 		super(unlocalisedName);
 		this.setMaxStackSize(1);
+		this.staffElement = staffElement;
 
 	}
 
@@ -40,17 +42,22 @@ public class Staff extends BasicMagicItem {
 	@CapabilityInject(IExtendedPlayer.class)
 	static Capability<IExtendedPlayer> EXT_PLAYER = null;
 
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer playerIn, EnumHand handIn) {
 		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players
 				.get(Minecraft.getMinecraft().player.getUniqueID());
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 
 		switch (props.getSpell()) {
-			case NameConstants.SPELL_FIERYBLAST:
+		case NameConstants.SPELL_FIERYBLAST:
 
-				break;
-			default:
-				
+			break;
+		case NameConstants.SPELL_HEAL:
+			if(consumeAllSpellRunes(player, Spells.getSpellByName(props.getSpell())) && !world.isRemote){
+				player.setHealth(player.getHealth() + Spells.heal.getSpellDamage());
+			}
+			break;
+		default:
+
 		}
 
 		return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
