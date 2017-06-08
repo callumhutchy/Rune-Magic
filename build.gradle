@@ -84,7 +84,7 @@ processResources {
         def minor = Integer.parseInt(values[1])
         def patch = Integer.parseInt(values[2])
         
-        project.version = config.mc_version + "-" +  major + "." + minor + "." + patch  + "." + config.build_number
+        project.version = config.mc_version + "_" +  major + "." + minor + "." + patch  + "." + config.build_number
     
     
     // this will ensure that this task is redone when the versions change.
@@ -191,7 +191,7 @@ task incrementPatch << {
         def patch = Integer.parseInt(values[2])
         
         oldVersion = major + "." + minor + "." + patch
-        newVersion = config.mc_version + "-" +  major + "." + minor + "." + (patch + 1)  + "." + config.build_number
+        newVersion = config.mc_version + "_" +  major + "." + minor + "." + (patch + 1)  + "." + config.build_number
    
         
     println(":incrementPatch - Current Version: " + oldVersion)
@@ -218,7 +218,7 @@ task incrementMinor << {
         def patch = Integer.parseInt(values[2])
         
         oldVersion = major + "." + minor + "." + patch
-        newVersion = config.mc_version + "-" +  major + "." + (minor + 1) + ".0"  + "." + config.build_number
+        newVersion = config.mc_version + "_" +  major + "." + (minor + 1) + ".0"  + "." + config.build_number
      
     println(":incrementMinor - Current Version: " + oldVersion)
     println(":incrementMinor - New Version:     " + newVersion)
@@ -244,7 +244,7 @@ task incrementMajor << {
         def patch = Integer.parseInt(values[2])
         
         oldVersion = major + "." + minor + "." + patch
-        newVersion = config.mc_version + "-" + (major + 1) + ".0.0" + "." + config.build_number
+        newVersion = config.mc_version + "_" + (major + 1) + ".0.0" + "." + config.build_number
     
     println(":incrementMinor - Current Version: " + oldVersion)
     println(":incrementMinor - New Version:     " + newVersion)
