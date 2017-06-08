@@ -303,7 +303,8 @@ task getModData << {
 }
 
 curseforge {
-    apiKey = priv.cfkey
+println("Attempting to upload to curse")
+    apiKey = '7b3bd274-a667-4a42-b3b5-9cddbc4d60a4'
     project {
         id = "222854"
         changelog = """
@@ -311,9 +312,6 @@ curseforge {
         """
         releaseType = "release"
         addGameVersion "${config.cf_meta_version}"
-        mainArtifact(jar) {
-      displayName = "Rune Magic version: ${config.version}"
-    }
     }
 }
 
