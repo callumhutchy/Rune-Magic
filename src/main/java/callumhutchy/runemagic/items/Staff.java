@@ -2,6 +2,9 @@ package callumhutchy.runemagic.items;
 
 import java.awt.TextComponent;
 import java.util.ArrayList;
+import java.util.Optional;
+
+import com.jcraft.jorbis.Block;
 
 import callumhutchy.runemagic.RuneMagic;
 import callumhutchy.runemagic.references.NameConstants;
@@ -11,12 +14,16 @@ import callumhutchy.runemagic.references.spells.Spell;
 import callumhutchy.runemagic.spells.Spells;
 import callumhutchy.runemagic.utils.capability.ExtendedPlayer;
 import callumhutchy.runemagic.utils.capability.interfaces.IExtendedPlayer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -46,32 +53,70 @@ public class Staff extends BasicMagicItem {
 	static Capability<IExtendedPlayer> EXT_PLAYER = null;
 
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer playerIn, EnumHand handIn) {
+		
+		SpellCast(playerIn, world, handIn, null,null,0,0,0);
+		
+		return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
+	}
+
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+		SpellCast(player, world,hand,pos,facing,hitX,hitY,hitZ);
+		
+        return EnumActionResult.PASS;
+    }
+
+	public void SpellCast(EntityPlayer playerIn, World world,EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ){
 		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players
 				.get(Minecraft.getMinecraft().player.getUniqueID());
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
 		if (!world.isRemote) {
-			System.out.println(props.getSpell());
 
-			switch (props.getSpell()) {
+			String currentSpell = props.getSpell();
+			
+			
+			switch (currentSpell) {
 			case NameConstants.SPELL_FIERYBLAST:
 
 				break;
 			case NameConstants.SPELL_HEAL:
-				if (playerIn.getHealth() != playerIn.getMaxHealth()) {
-					if (consumeAllSpellRunes(playerIn, Spells.getSpellByName(props.getSpell()), world)) {
+				if (playerIn.getHealth() != playerIn.getMaxHealth() && !creativeCasting(playerIn)) {
+					if (consumeAllSpellRunes(playerIn, Spells.getSpellByName(currentSpell), world)) {
 						playerIn.setHealth(playerIn.getHealth() + Spells.heal.getSpellDamage());
+						increaseExperience(Spells.heal.getSpellExp(), player);
 					}
+				}else if(creativeCasting(playerIn)){
+					sendMessage(playerIn, "You are in creative mode, the spell had no effect.");
 				} else if (playerIn.getHealth() == playerIn.getMaxHealth()) {
-					playerIn.sendMessage(new TextComponentString("You already have max health."));
+					sendMessage(playerIn,"You already have max health.");
 				}
+				break;
+			case NameConstants.SPELL_EARTHPILLAR:
+				if(world.getBlockState(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())) == Blocks.AIR.getDefaultState() && !world.isRemote){
+					if (consumeAllSpellRunes(playerIn, Spells.getSpellByName(currentSpell), world)) {
+						
+						for(int i = 0; i < 3; i++){
+							if(world.getBlockState(new BlockPos(pos.getX(), pos.getY() + i, pos.getZ())) == Blocks.AIR.getDefaultState()){
+								world.setBlockState(new BlockPos(pos.getX(),pos.getY()+i, pos.getZ()), Blocks.STONE.getDefaultState());
+							}
+						}
+						increaseExperience(Spells.earthPillar.getSpellExp(), player);
+					}
+				}
+				break;
+			case NameConstants.SPELL_ICEPILLAR:
+				
 				break;
 			default:
 
 			}
 		}
-		return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
 	}
-
+	
+	public static void increaseExperience(float exp, EntityPlayer player){
+		player.getCapability(EXT_PLAYER, null).increaseExperience(exp);
+	}
+	
 	boolean creativeCasting(EntityPlayer player) {
 		return player.capabilities.isCreativeMode;
 	}
@@ -146,4 +191,8 @@ public class Staff extends BasicMagicItem {
 		return true;
 	}
 
+	public static void sendMessage(EntityPlayer player, String msg){
+		player.sendMessage(new TextComponentString(msg));
+	}
+	
 }
