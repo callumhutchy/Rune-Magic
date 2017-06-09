@@ -1,5 +1,6 @@
 package callumhutchy.runemagic.items;
 
+import java.awt.TextComponent;
 import java.util.ArrayList;
 
 import callumhutchy.runemagic.RuneMagic;
@@ -16,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -46,20 +49,26 @@ public class Staff extends BasicMagicItem {
 		EntityPlayer player = (EntityPlayer) RuneMagic.instance.players
 				.get(Minecraft.getMinecraft().player.getUniqueID());
 		ExtendedPlayer props = (ExtendedPlayer) player.getCapability(EXT_PLAYER, null);
+		if (!world.isRemote) {
+			System.out.println(props.getSpell());
 
-		switch (props.getSpell()) {
-		case NameConstants.SPELL_FIERYBLAST:
+			switch (props.getSpell()) {
+			case NameConstants.SPELL_FIERYBLAST:
 
-			break;
-		case NameConstants.SPELL_HEAL:
-			if(consumeAllSpellRunes(player, Spells.getSpellByName(props.getSpell())) && !world.isRemote){
-				player.setHealth(player.getHealth() + Spells.heal.getSpellDamage());
+				break;
+			case NameConstants.SPELL_HEAL:
+
+				if (consumeAllSpellRunes(playerIn, Spells.getSpellByName(props.getSpell()), world)
+						&& playerIn.getHealth() != playerIn.getMaxHealth()) {
+					playerIn.setHealth(playerIn.getHealth() + Spells.heal.getSpellDamage());
+				} else if (playerIn.getHealth() == playerIn.getMaxHealth()) {
+					playerIn.sendMessage(new TextComponentString("You already have max health."));
+				}
+				break;
+			default:
+
 			}
-			break;
-		default:
-
 		}
-
 		return new ActionResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
 	}
 
@@ -85,11 +94,11 @@ public class Staff extends BasicMagicItem {
 		return returnArray;
 	}
 
-	public boolean consumeAllSpellRunes(EntityPlayer entity, Spell spell) {
+	public boolean consumeAllSpellRunes(EntityPlayer entity, Spell spell, World world) {
 		ArrayList<ItemStack> itemsToRemove = new ArrayList<ItemStack>();
 		if (!creativeCasting(entity)) {
 			for (RuneCost rune : spell.getRuneCost()) {
-				if (rune.getRune() != staffElement.rune) {
+				if (staffElement == null || rune.getRune() != staffElement.rune) {
 					ItemStack runesToRemove = new ItemStack(rune.getRune(), rune.getAmount());
 					if (entity.inventory.hasItemStack(runesToRemove)) {
 						itemsToRemove.add(runesToRemove);
@@ -97,10 +106,17 @@ public class Staff extends BasicMagicItem {
 						return false;
 					}
 				}
+
 			}
 
+			System.out.println(itemsToRemove.size());
+
 			for (ItemStack runes : itemsToRemove) {
-				entity.inventory.deleteStack(runes);
+				System.out.println(runes.getUnlocalizedName());
+				if(!world.isRemote){
+					entity.inventory.deleteStack(runes);
+				}
+				
 			}
 			return true;
 
