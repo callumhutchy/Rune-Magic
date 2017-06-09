@@ -57,10 +57,10 @@ public class Staff extends BasicMagicItem {
 
 				break;
 			case NameConstants.SPELL_HEAL:
-
-				if (consumeAllSpellRunes(playerIn, Spells.getSpellByName(props.getSpell()), world)
-						&& playerIn.getHealth() != playerIn.getMaxHealth()) {
-					playerIn.setHealth(playerIn.getHealth() + Spells.heal.getSpellDamage());
+				if (playerIn.getHealth() != playerIn.getMaxHealth()) {
+					if (consumeAllSpellRunes(playerIn, Spells.getSpellByName(props.getSpell()), world)) {
+						playerIn.setHealth(playerIn.getHealth() + Spells.heal.getSpellDamage());
+					}
 				} else if (playerIn.getHealth() == playerIn.getMaxHealth()) {
 					playerIn.sendMessage(new TextComponentString("You already have max health."));
 				}
@@ -113,10 +113,23 @@ public class Staff extends BasicMagicItem {
 
 			for (ItemStack runes : itemsToRemove) {
 				System.out.println(runes.getUnlocalizedName());
-				if(!world.isRemote){
-					entity.inventory.deleteStack(runes);
+				if (!world.isRemote) {
+					int i = 0;
+					int requiredToRemove = runes.getCount();
+					while (requiredToRemove > 0) {
+						ItemStack stack = entity.inventory.mainInventory.get(i);
+						if (stack != null && stack.getItem() == runes.getItem()) {
+							if (requiredToRemove >= stack.getCount()) {
+								entity.inventory.mainInventory.set(i, null);
+							} else {
+								stack.setCount(stack.getCount() - requiredToRemove);
+								requiredToRemove -= stack.getCount();
+							}
+						}
+						i++;
+					}
 				}
-				
+
 			}
 			return true;
 
